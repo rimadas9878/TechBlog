@@ -1,5 +1,13 @@
 const router = require('express').Router();
-const{Comments, Post, User} = require('../models')
+const{Comment, Post, User} = require('../models')
+
+router.get('/post', async (req,res) => {
+    const postData = await Post.findAll()
+    console.log(postData)
+    const posts = postData.map(Post => Post.get({plain:true}))
+    res.render("Homepage", {posts, logged_in: req.session.logged_in});
+})
+
 
 router.get('/', (req,res) => {
     if(req.session.logged_in){
@@ -24,5 +32,7 @@ router.get('/signup', (req, res) => {
     }
     res.render('signup');
 });
+
+router.get("/")
 
 module.exports = router;
