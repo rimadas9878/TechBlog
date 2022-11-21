@@ -3,7 +3,7 @@ const { User } = require('../../models');
 const withAuth = require('../../utils/auth')
 
        
- router.get('/games', withAuth, (req, res) => {
+ router.get('/dashboard', withAuth, (req, res) => {
      console.log("=====================")
      console.log("dashboard-route")
      console.log(req)

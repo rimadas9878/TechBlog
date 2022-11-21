@@ -17,6 +17,7 @@ router.post('/', async (req, res) => {
         req.session.username = newUser.username;
         req.session.loggedIn = true;
         console.log("Post user",newUser)
+        //looks for the new user and add to the page
         res.json(newUser);
       });
     } catch (err) {
