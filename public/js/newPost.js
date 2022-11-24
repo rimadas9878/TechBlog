@@ -1,17 +1,27 @@
-const { Sequelize, Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connection.js');
+const newPostHandles = async (event) => {
+    event.preventDefault();
 
-class Post extends Model {}
+    const title = document.querySelector('#title').value.trim();
+    const content = document.querySelector('#content').value.trim();
 
-Post.init(
-  {
-    title: DataTypes.STRING,
-    content: DataTypes.STRING,
-    createdDate: DataTypes.DATE
-  },
-  {
-    sequelize
-  }
-);
+const response = await fetch('/api/posts', {
+    method: 'POST',
+    body: JSON.stringify({
+        title,
+        content
+    }),
+    headers: { 'Content-Type': 'application/json' },   
+});
+if(response.ok){
+    document.location.replace('/dashboard');
+}
+else {
+    alert(response.statusText);
+}
+};
 
-module.exports = Post;
+
+
+document
+    .querySelector('.newPost')
+    .addEventListener('submit', newPostHandles);
