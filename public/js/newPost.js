@@ -4,7 +4,7 @@ const newPostHandles = async (event) => {
     const title = document.querySelector('#title').value.trim();
     const content = document.querySelector('#content').value.trim();
 
-const response = await fetch('/api/posts', {
+const response = await fetch('/dashboard', {
     method: 'POST',
     body: JSON.stringify({
         title,
