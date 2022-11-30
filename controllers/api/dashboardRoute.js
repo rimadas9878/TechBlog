@@ -1,111 +1,44 @@
 const router = require('express').Router();
-const { User, Post, Comment } = require('../../models');
+const { Post } = require('../../models');
 const withAuth = require('../../utils/auth');
 const { route } = require('./commentRoute');
 
-       
- router.get('/', async (req, res) => {
-     try{
-      if(!req.session.logged_in){
-        res.redirect("/login")
-      }
-      const dashboard_Content = await Post.findAll(
-        {
-          attributes: ["id", "title","content","createdDate", "userId"],
-          where: {
-            user_id: req.session.user_id
-          }
-        }
-      )
+//Adding a post to the dashboard
+router.post('/', async (req, res) => {
+  console.log("Post",req.body)
+  try {
+    const newPost = await Post.create({
+      ...req.body,
+      userId: req.session.userId,
+    });
+    console.log("Post create",newPost)
 
-      const posts = dashboard_Content.map(Post => Post.get({plain : true}));
+    res.status(200).json(newPost);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+});
 
-      res.render("dashboard", {
-        posts,
-        logged_in: req.session.logged_in
-      })
-     }
-     catch(err){
-      res.status(500).json(err)
-     }
-     
-   });
-
-   //get single post
-   router.get("/singlePost/:id", async (req,res) => {
-    try{
-      const post_Content = await Post.findByPk(req.params.id,{
-        attribute: ["id", "title","content","createdDate"]
-      })
-
-      const singlePost = post_Content.get({plain:true});
-
-      res.render("singlePost", {
-        singlePost,
-        logged_in: req.session.logged_in
-      })
-    }
-    catch(err){
-      res.status(500).json(err)
-     }
-   })
-
-   //Post into the dashboard
-   router.post("/", async (req, res) => {
-
-    const user_id = req.session.user_id;
-    const {title, content} = req.body;
-
-    try{
-      const newPost = await Post.create({
-        title,
-        content,
-        user_id
-      })
-
-      res.status(200).json(newPost)
-    }
-    catch(err){
-      res.status(400).json(err)
-    }
-   })
-
-   //updating the post
-   router.put("/singlePost/:id", async (req,res) => {
-    const{title, content} = req.body;
-
-    try{
-      const update_Post = await Post.update({
-        title,
-        content
+//Deleting the post
+router.delete('/:id', async (req, res) => {
+  try {
+    const postData = await Post.destroy({
+      where: {
+        id: req.params.id,
+        user_id: req.session.user_id,
       },
-      {
-        where: {
-          id: req.params.id
-        }
-      }
-      )
-      res.status(200).json(update_Post);
-    }
-    catch(err){
-      res.status(500).json(err)
-    }
-   })
+    });
 
-   //deleting a post
-   router.delete("/:id", async (req,res) => {
-    try{
-      const delete_Post = await Post.destroy({
-        where: {
-          id: req.params.id
-        }
-      })
-      res.status(200).json(delete_Post);
+    if (!postData) {
+      res.status(404).json({ message: 'No post found with this id!' });
+      return;
     }
-    catch(err){
-      res.status(500).json(err)
-    }
-   })
+
+    res.status(200).json(postData);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 
-   module.exports = router
+module.exports = router

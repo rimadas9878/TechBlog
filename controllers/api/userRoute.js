@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User,Post } = require('../../models');
 
  // Login
  router.post('/login', async (req, res) => {
@@ -18,7 +18,7 @@ const { User } = require('../../models');
     }
 
     const validPassword = user.checkPassword(req.body.password);
-
+console.log("user", user)
     if (!validPassword) {
       console.log("validPassword")
       res.status(400).json({ message: 'No user account found!' });
@@ -28,7 +28,7 @@ const { User } = require('../../models');
     req.session.save(() => {
       req.session.userId = user.id;
       req.session.username = user.username;
-      req.session.loggedIn = true;
+      req.session.logged_in = true;
 
       res.json({ user, message: 'You are now logged in!' });
   
@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
         req.session.userId = newUser.id;
         req.session.name = newUser.name
         req.session.username = newUser.username;
-        req.session.loggedIn = true;
+        req.session.logged_in = true;
         console.log("Post user",newUser)
         //looks for the new user and add to the page
         res.json(newUser);
@@ -67,7 +67,7 @@ router.post('/', async (req, res) => {
  
   // Logout
   router.post('/logout', (req, res) => {
-    if (req.session.loggedIn) {
+    if (req.session.logged_in) {
       req.session.destroy(() => {
         res.status(204).end();
       });
@@ -75,6 +75,30 @@ router.post('/', async (req, res) => {
       res.status(404).end();
     }
   });
+
+  router.get('/dashboard', async (req, res) => {
+    try{
+      const home_Content = await Post.findAll({
+        attributes: ["id", "title", "createdDate"],
+        where: {userId:req.session.userId},
+        include:{
+          model: User,
+          attributes:["username"]
+        }
+      }
+      )
+      const posts = home_Content.map(post => post.get({plain: true}));
+       console.log("dashboard",posts)
+      res.render("dashboard", {
+        posts,
+        logged_in: req.session.logged_in
+      })
+    }
+    catch(err){
+      console.log("err",err)
+      res.status(500).json(err);
+    }
+  })
   
   module.exports = router;
   

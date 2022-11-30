@@ -15,9 +15,9 @@ router.get('/post', async (req,res) => {
 router.get('/', (req,res) => {
     if(req.session.logged_in){
         res.redirect('/dashboard');
-        return;
+       
     }
-    res.render('login');
+    res.redirect('/api/post');
 });
 
 router.get('/login', (req,res) => {
@@ -37,11 +37,12 @@ router.get('/signup', (req, res) => {
 });
 
 router.get('/dashboard', (req, res) => {
+    console.log("Dashboard",req.session.logged_in)
     if(req.session.logged_in){
-        res.redirect('/dashboard');
+        res.redirect('/api/users/dashboard');
         return;
     }
-    res.render('dashboard');
+    res.redirect("/")
 });
 
 router.get('/new-post', (req, res) => {
