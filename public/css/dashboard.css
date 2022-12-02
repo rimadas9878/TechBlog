@@ -1,0 +1,48 @@
+.postTitle{
+    text-align: center;
+}
+
+.dashboard-form{
+    border: 1px solid gray;
+    margin: 5%;
+    padding: 3%;
+    display: flex;
+    flex-direction: column;
+}
+
+.titleLabel{
+    margin-left: 4%;
+    padding-bottom: 1%;
+    font-size: larger;
+}
+.titleArea{
+    padding: 1% 35%;
+}
+
+.contentText{
+    margin-left: 4%;
+    padding-bottom: 1%;
+    font-size: larger;
+}
+
+.contentArea{
+    padding: 3% 30%;
+}
+
+.postSubmit{
+    display: flex;
+    align-items: center;
+    padding: 1% 4%;
+    border-radius: 2%;
+    margin-left:45%;
+}
+
+.dashboardPost{
+    border: 1px solid black;
+    margin: 2%;
+}
+
+.createdPostTitle{
+    border: 1px solid black;
+}
+

@@ -8,12 +8,12 @@ router.get('/post', async (req,res) => {
     //serialize the data
     const posts = postData.map(Post => Post.get({plain:true}))
     //it will look fro homepage.handlebars, it will pass in posts in line 9 also it will  
-    res.render("Homepage", {posts, logged_in: req.session.logged_in});
+    res.render("Homepage", {posts, loggedIn: req.session.loggedIn});
 })
 
 
 router.get('/', (req,res) => {
-    if(req.session.logged_in){
+    if(req.session.loggedn){
         res.redirect('/dashboard');
        
     }
@@ -21,7 +21,7 @@ router.get('/', (req,res) => {
 });
 
 router.get('/login', (req,res) => {
-    if(req.session.logged_in){
+    if(req.session.loggedIn){
         res.redirect('/dashboard');
         return;
     }
@@ -29,7 +29,7 @@ router.get('/login', (req,res) => {
 });
 
 router.get('/signup', (req, res) => {
-    if(req.session.logged_in){
+    if(req.session.loggedIn){
         res.redirect('/dashboard');
         return;
     }
@@ -37,8 +37,8 @@ router.get('/signup', (req, res) => {
 });
 
 router.get('/dashboard', (req, res) => {
-    console.log("Dashboard",req.session.logged_in)
-    if(req.session.logged_in){
+    console.log("Dashboard",req.session.loggedIn)
+    if(req.session.loggedIn){
         res.redirect('/api/users/dashboard');
         return;
     }
@@ -46,7 +46,7 @@ router.get('/dashboard', (req, res) => {
 });
 
 router.get('/new-post', (req, res) => {
-    if(req.session.logged_in){
+    if(req.session.loggedIn){
         res.redirect('/post');
         return;
     }
